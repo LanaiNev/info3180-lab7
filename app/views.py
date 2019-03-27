@@ -5,8 +5,11 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 
+import os
 from app import app
-from flask import render_template, request
+from flask import render_template, request, flash, jsonify
+from app.forms import UploadForm
+from werkzeug.utils import secure_filename
 
 ###
 # Routing for your application.
@@ -43,6 +46,21 @@ def form_errors(form):
             error_messages.append(message)
 
     return error_messages
+
+@app.route('/api/upload', methods=['GET', 'POST'])
+def upload():
+    form = UploadForm()
+    
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            description = request.form['description']
+            
+            file = request.files['photo']
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            
+            return jsonify(messages=[{'message': 'File Upload Successful', 'filename': filename, 'description': description}])
+    return  jsonify(errors=[{'error': form_errors(form)}])
 
 
 ###
