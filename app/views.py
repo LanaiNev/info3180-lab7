@@ -59,8 +59,8 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             
-            return jsonify(messages=[{'message': 'File Upload Successful', 'filename': filename, 'description': description}])
-    return  jsonify(errors=[{'error': form_errors(form)}])
+            return jsonify(messages=[{"message": "File Upload Successful", "filename": filename, "description": description}])
+    return  jsonify(errors=[{"error": form_errors(form)}])
 
 
 ###
